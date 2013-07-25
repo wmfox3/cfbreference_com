@@ -13,7 +13,8 @@ date_based_dict = {
  
 urlpatterns = patterns("",
     url(r"^$", homepage ),
-    url(r"^feeds/(?P<url>.*)/$", "django.contrib.syndication.views.feed", {
+
+    url(r"^feeds/(?P<url>.*)/$", "django.contrib.syndication.views.Feed", {
         "feed_dict": feeds,
     }, name="blog_feeds"),
     

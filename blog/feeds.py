@@ -1,9 +1,9 @@
-from django.contrib.syndication import feeds
+from django.contrib.syndication.views import Feed
 from django.core.exceptions import ObjectDoesNotExist
  
 from blog.models import Post
  
-class LatestPostFeed(feeds.Feed):
+class LatestPostFeed(Feed):
     """
 Feed of the latest 10 posts.
 """
