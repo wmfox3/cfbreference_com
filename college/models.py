@@ -48,8 +48,8 @@ PLAY_CHOICES = (
 )
 
 DIVISION_CHOICES = (
-    ('B', 'Bowl Subdivision'),
-    ('C', 'Championship Subdivision'),
+    ('B', 'Football Bowl Subdivision'),
+    ('C', 'Football Championship Subdivision'),
     ('D', 'Division II'),
     ('T', 'Division III'),
 )
@@ -62,7 +62,7 @@ class State(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return "/states/%s/" % self.id.lower()
+        return "/ncaa/states/%s/" % self.id.lower()
     
 class StateForm(forms.Form):
     name = forms.ModelChoiceField(queryset=State.objects.all().order_by('name'))
@@ -79,7 +79,7 @@ class City(models.Model):
             return self.name
     
     def get_absolute_url(self):
-        return "/states/%s/%s/" % (self.state.id.lower(), self.slug)
+        return "/ncaa/states/%s/%s/" % (self.state.id.lower(), self.slug)
     
     class Meta:
         verbose_name_plural = 'cities'
@@ -94,7 +94,7 @@ class Week(models.Model):
         return "Week %s, %s" % (self.week_num, self.season)
     
     def week_games_url(self):
-        return "/seasons/%s/week/%s/" % (self.season, self.week_num)
+        return "/ncaa/seasons/%s/week/%s/" % (self.season, self.week_num)
 
 class Conference(models.Model):
     abbrev = models.CharField(max_length=10)
@@ -104,14 +104,17 @@ class Conference(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return '/conferences/%s/' % self.abbrev.lower()
+        return '/ncaa/conferences/%s/' % self.abbrev.lower()
+
+class NextDummyId(models.Model):
+    next_id = models.PositiveIntegerField()
 
 class College(models.Model):
     name = models.CharField(max_length=90)
     slug = models.SlugField(max_length=90)
     drive_slug = models.CharField(max_length=90)
 #    city = models.ForeignKey(City, blank=True) #
-    state = models.ForeignKey(State, blank=True)
+    state = models.ForeignKey(State, blank=True, null=True)
     official_url = models.CharField(max_length=120, blank=True)
     official_rss = models.CharField(max_length=120, blank=True)
     updated = models.BooleanField()
@@ -120,12 +123,15 @@ class College(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return '/teams/%s/' % self.slug
+        return '/ncaa/teams/%s/' % self.slug
     
     def current_record(self):
         current_season = self.collegeyear_set.get(season=datetime.date.today()).year
         return "(%d-%d)" % (current_season.wins, current_season.losses)
     
+    def current_conference(self):
+        return self.collegeyear_set.get(season=CURRENT_SEASON).conference
+
     class Meta:
         ordering = ['name', 'state']
         
@@ -156,11 +162,11 @@ class CollegeYear(models.Model):
         return 'http://web1.ncaa.org/football/exec/rankingSummary?year=%d&org=%d&week=' % (self.season, self.college.id)
     
     def get_absolute_url(self):
-        return "/teams/%s/%s/" % (self.college.slug, self.season)
+        return "/ncaa/teams/%s/%s/" % (self.college.slug, self.season)
     
     def get_conference_url(self):
         if self.conference:
-            return "/conferences/%s/%s/" % (self.conference.abbrev, self.season)
+            return "/ncaa/conferences/%s/%s/" % (self.conference.abbrev, self.season)
     
     def coaching_staff_url(self):
         return self.get_absolute_url()+'coaches/'
@@ -205,7 +211,7 @@ class Coach(models.Model):
         super(Coach, self).save()
     
     def get_absolute_url(self):
-        return '/coaches/detail/%s/' % self.slug
+        return '/ncaa/coaches/detail/%s/' % self.slug
     
     def full_name(self):
         return self.first_name + " " + self.last_name
@@ -388,7 +394,7 @@ class Position(models.Model):
         return self.abbrev
 
     def get_absolute_url(self):
-        return '/recruits/positions/%s/' % self.abbrev.lower()
+        return '/ncaa/recruits/positions/%s/' % self.abbrev.lower()
 
 
 class BowlGame(models.Model):
@@ -400,7 +406,7 @@ class BowlGame(models.Model):
         return self.name
     
     def get_absolute_url(self):
-        return '/bowl-games/%s/' % self.slug
+        return '/ncaa/bowl-games/%s/' % self.slug
     
 
 class Game(models.Model):
@@ -410,22 +416,22 @@ class Game(models.Model):
     team2 = models.ForeignKey(CollegeYear, related_name='team2')
     coach2 = models.ForeignKey(Coach, null=True, blank=True, related_name='second_coach')
     date = models.DateField()
-    week = models.ForeignKey(Week)
+    week = models.ForeignKey(Week, null=True, blank=True) #can be left blank initially
     t1_game_type = models.CharField(max_length=1, choices=GAME_TYPE_CHOICES)
-    t1_result = models.CharField(max_length=1, choices=RESULT_CHOICES, blank=True)
+    t1_result = models.CharField(max_length=1, choices=RESULT_CHOICES, blank=True, null=True)
     team1_score = models.IntegerField(null=True, blank=True)
     team2_score = models.IntegerField(null=True, blank=True)
     site = models.CharField(max_length=90, blank=True)
     attendance = models.IntegerField(null=True, blank=True)
-    overtime = models.CharField(max_length=5, blank=True)
-    ncaa_xml = models.CharField(max_length=120, blank=True)
+    overtime = models.CharField(max_length=5, blank=True, null=True)
+    ncaa_xml = models.CharField(max_length=120, blank=True, null=True)
     duration = models.TimeField(null=True, blank=True)
-    has_drives = models.BooleanField()
-    has_stats = models.BooleanField()
-    has_player_stats = models.BooleanField()
-    has_plays = models.BooleanField()
-    is_conference_game = models.BooleanField()
-    is_bowl_game = models.BooleanField()
+    has_drives = models.BooleanField(default=False)
+    has_stats = models.BooleanField(default=False)
+    has_player_stats = models.BooleanField(default=False)
+    has_plays = models.BooleanField(default=False)
+    is_conference_game = models.BooleanField(default=False)
+    is_bowl_game = models.BooleanField(default=False)
     bowl_game = models.ForeignKey(BowlGame, null=True, blank=True)
     
     def __unicode__(self):
@@ -438,25 +444,25 @@ class Game(models.Model):
         return self.team2.college.name
     
     def get_absolute_url(self):
-        return '/teams/%s/vs/%s/%s/%s/%s/' % (self.team1.college.slug, self.team2.college.slug, self.date.year, self.date.month, self.date.day)
+        return '/ncaa/teams/%s/vs/%s/%s/%s/%s/' % (self.team1.college.slug, self.team2.college.slug, self.date.year, self.date.month, self.date.day)
 
     def get_matchup_url(self):
-        return '/teams/%s/vs/%s/' % (self.team1.college.slug, self.team2.college.slug)
+        return '/ncaa/teams/%s/vs/%s/' % (self.team1.college.slug, self.team2.college.slug)
     
     def get_reverse_url(self):
-        return '/teams/%s/vs/%s/%s/%s/%s/' % (self.team2.college.slug, self.team1.college.slug, self.date.year, self.date.month, self.date.day)
+        return '/ncaa/teams/%s/vs/%s/%s/%s/%s/' % (self.team2.college.slug, self.team1.college.slug, self.date.year, self.date.month, self.date.day)
         
     def get_ncaa_xml_url(self):
         return 'http://web1.ncaa.org/d1mfb/%s/Internet/worksheets/%s.xml' % (self.season, self.ncaa_xml.strip())
     
     def get_ncaa_drive_url(self):
-        return "http://web1.ncaa.org/mfb/driveSummary.jsp?acadyr=%s&h=%s&v=%s&date=%s&game=%s" % (self.season, self.team1.college.id, self.team2.id, self.date.strftime("%d-%b-%y").upper(), self.ncaa_xml.strip())
+        return "http://web1.ncaa.org/mfb/driveSummary.jsp?acadyr=%s&h=%s&v=%s&date=%s&game=%s" % (self.season, self.team1.college.id, self.team2.college.id, self.date.strftime("%d-%b-%y").upper(), self.ncaa_xml.strip())
     
     def get_ncaa_scoring_url(self):
-        return "http://web1.ncaa.org/mfb/scoreSummary.jsp?acadyr=%s&h=%s&v=%s&date=%s&game=%s" % (self.season, self.team1.college.id, self.team2.id, self.date.strftime("%d-%b-%y").upper(), self.ncaa_xml.strip())
+        return "http://web1.ncaa.org/mfb/scoreSummary.jsp?acadyr=%s&h=%s&v=%s&date=%s&game=%s" % (self.season, self.team1.college.id, self.team2.college.id, self.date.strftime("%d-%b-%y").upper(), self.ncaa_xml.strip())
 
     def get_play_by_play_url(self):
-        return "http://web1.ncaa.org/mfb/driveSummary.jsp?expand=A&acadyr=%s&h=%s&v=%s&date=%s&game=%s" % (self.season, self.team1.college.id, self.team2.id, self.date.strftime("%d-%b-%y").upper(), self.ncaa_xml.strip())
+        return "http://web1.ncaa.org/mfb/driveSummary.jsp?expand=A&acadyr=%s&h=%s&v=%s&date=%s&game=%s" % (self.season, self.team1.college.id, self.team2.college.id, self.date.strftime("%d-%b-%y").upper(), self.ncaa_xml.strip())
     
     def margin(self):
         return self.team1_score-self.team2_score
@@ -490,29 +496,29 @@ class GameScore(models.Model):
 
 class DriveOutcome(models.Model):
     abbrev = models.CharField(max_length=10)
-    name = models.CharField(max_length=50, null=True)
-    slug = models.SlugField(max_length=50, null=True)
+    name = models.CharField(max_length=50, blank=True, null=True)
+    slug = models.SlugField(max_length=50, blank=True, null=True)
     
     def __unicode__(self):
-        return self.name
+        return "%s" % self.abbrev
 
 class GameDrive(models.Model):
     season = models.IntegerField()
     game = models.ForeignKey(Game)
     team = models.ForeignKey(CollegeYear)
-    drive = models.IntegerField()
-    quarter = models.PositiveSmallIntegerField()
-    start_how = models.CharField(max_length=25)
-    start_time = models.TimeField()
-    start_position = models.IntegerField()
-    start_side = models.CharField(max_length=1, choices=SIDE_CHOICES)
+    drive = models.IntegerField(blank=True, null=True)
+    quarter = models.PositiveSmallIntegerField(blank=True, null=True)
+    start_how = models.CharField(max_length=25, blank=True, null=True)
+    start_time = models.TimeField(blank=True, null=True)
+    start_position = models.IntegerField(blank=True, null=True)
+    start_side = models.CharField(max_length=1, choices=SIDE_CHOICES, blank=True, null=True)
     end_result = models.ForeignKey(DriveOutcome)
-    end_time = models.TimeField()
-    end_position = models.IntegerField(null=True)
-    end_side = models.CharField(max_length=1, choices=SIDE_CHOICES)
-    plays = models.IntegerField()
-    yards = models.IntegerField()
-    time_of_possession = models.TimeField()
+    end_time = models.TimeField(blank=True, null=True)
+    end_position = models.IntegerField(blank=True, null=True)
+    end_side = models.CharField(max_length=1, choices=SIDE_CHOICES,blank=True, null=True)
+    plays = models.IntegerField(blank=True, null=True)
+    yards = models.IntegerField(blank=True, null=True)
+    time_of_possession = models.TimeField(blank=True, null=True)
     
     def __unicode__(self):
         return "%s: %s drive %s" % (self.game, self.team, self.drive)
@@ -676,13 +682,13 @@ class Player(models.Model):
             'number': self.number,
             'position': self.position.abbrev
         })
-        #return '/teams/%s/%s/players/%s/' % (self.team.college.slug, self.season, self.slug)
+        #return /ncaa'/teams/%s/%s/players/%s/' % (self.team.college.slug, self.season, self.slug)
     
     def get_team_position_url(self):
-        return '/teams/%s/%s/players/positions/%s/' % (self.team.college.slug, self.season, self.position.abbrev.lower())
+        return '/ncaa/teams/%s/%s/players/positions/%s/' % (self.team.college.slug, self.season, self.position.abbrev.lower())
     
     def get_team_class_url(self):
-        return '/teams/%s/%s/players/class/%s/' % (self.team.college.slug, self.season, self.status.lower())
+        return '/ncaa/teams/%s/%s/players/class/%s/' % (self.team.college.slug, self.season, self.status.lower())
     
     class Meta:
         ordering = ['id']
@@ -701,8 +707,8 @@ class PlayerGame(models.Model):
     game = models.ForeignKey(Game)
     played = models.BooleanField()
     starter = models.BooleanField()
-    total_plays = models.IntegerField()
-    total_yards = models.IntegerField()
+    total_plays = models.IntegerField(blank=True, null=True)
+    total_yards = models.IntegerField(blank=True, null=True)
     
     def __unicode__(self):
         return self.player.name
