@@ -2,7 +2,7 @@ from django.contrib import admin
 from college.models import State, City, College, Coach, CoachingJob, CollegeYear, CollegeCoach, Game, Position, Player, PlayerGame, PlayerRush, PlayerPass,PlayerReceiving, PlayerFumble, PlayerScoring, PlayerTackle, PlayerTacklesLoss, PlayerPassDefense, PlayerReturn, Conference, GameOffense, GameDefense, Week, GameDrive, DriveOutcome, BowlGame, QuarterScore, GameScore, GameDriveSeason, GamePlay
 
 class CollegeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'updated')
+    list_display = ('name', 'updated', 'slug', 'drive_slug', 'id', 'official_url', 'official_rss')
     list_filter = ('updated',)
     ordering = ('name',)
     search_fields = ('name',)
@@ -11,9 +11,10 @@ class CollegeAdmin(admin.ModelAdmin):
 
 class CollegeYearAdmin(admin.ModelAdmin):
     list_filter = ('season',)
-    list_display = ('college', 'season', 'wins','losses')
+    list_display = ('college', 'season', 'wins', 'losses', 'conference', 'division')
     search_fields = ('college__name',)
-    ordering = ('-id',)
+    #ordering = ('-id',)
+    ordering = ('college__name',)
     list_select_related = True
 
 class ConferenceAdmin(admin.ModelAdmin):
@@ -42,10 +43,10 @@ class CityAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
 
 class GameAdmin(admin.ModelAdmin):
-    list_display = ('team1', 'team2', 'date', 't1_result', 'team1_score', 'team2_score')
+    list_display = ('team1', 'team2', 'date', 't1_result', 'team1_score', 'team2_score', 'ncaa_xml', 'has_drives', 'has_plays', 'has_stats', 'has_player_stats')
     ordering = ('-date',)
     list_filter = ('season','week')
-    search_fields = ('team1__name',)
+    search_fields = ('team1__college__name',)
     raw_id_fields = ("coach1", "coach2", "team1", "team2", "bowl_game")
     list_select_related = True
 
@@ -66,8 +67,8 @@ class DriveOutcomeAdmin(admin.ModelAdmin):
     list_display = ('abbrev', 'name')
 
 class GameDriveAdmin(admin.ModelAdmin):
-    list_filter = ('start_how', 'plays')
-    list_display = ('game', 'team', 'drive', 'end_result')
+    list_filter = ('start_how', 'plays', 'end_result')
+    list_display = ('game', 'season', 'team', 'drive', 'end_result', 'quarter', 'start_how', 'start_time', 'start_side', 'start_position')
     list_select_related = True
 
 class GameDriveSeasonAdmin(admin.ModelAdmin):
