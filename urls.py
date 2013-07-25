@@ -11,28 +11,31 @@ feeds = {
 admin.autodiscover()
 
 urlpatterns = patterns('',
-     (r'^admin/coach_totals/(?P<season>\d\d\d\d)/$', "college.views.admin_coach_totals"),
-     (r'^admin/doc/', include('django.contrib.admindocs.urls')), 
-     (r"^admin/", include(admin.site.urls)),
-     url(r"^$", "college.views.homepage"),
-     url(r"^", include("college.urls")),
-     url(r"^rankings/", include("rankings.urls")),
-     (r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds}),
-     url(r"^blog/", include("blog.urls")),
-     url(r"^robots.txt$", direct_to_template, { 'template':"robots.txt"}, name="robots")
+    (r'^admin/coach_totals/(?P<season>\d\d\d\d)/$', "college.views.admin_coach_totals"),
+    (r'^admin/doc/', include('django.contrib.admindocs.urls')), 
+    (r"^admin/", include(admin.site.urls)),
+
+    url(r'^docs/', include('docs.urls')),
+    (r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.Feed', {'feed_dict': feeds}),
+    url(r"^robots.txt$", direct_to_template, { 'template':"robots.txt"}, name="robots"),
+
+    url(r"^$", "college.views.homepage"),
+    url(r"^", include("college.urls")),
+    url(r"^blog/", include("blog.urls")),
+    url(r"^rankings/", include("rankings.urls")),
 )
 
 urlpatterns += patterns('college.views',
-     url(r'^coaches/$', 'coach_index'),
-     url(r'^coaches/active/$', 'active_coaches'),
-     url(r'^coaches/feeds/recent_hires/$', 'recent_hires_feed'),
-     url(r'^coaches/detail/(?P<coach>\d+-[-a-z]+)/$', 'coach_detail', name="coach_detail"),
-     url(r'^coaches/detail/(?P<coach>\d+-[-a-z]+)/vs/$', 'coach_vs', name="coach_vs"),
-     url(r'^coaches/detail/(?P<coach>\d+-[-a-z]+)/vs/(?P<coach2>\d+-[-a-z]+)/$', 'coach_compare', name="coach_compare"),
-     url(r'^coaches/assistants/$', 'assistant_index'),
-     url(r'^coaches/common/(?P<coach>\d+-[-a-z]+)/(?P<coach2>\d+-[-a-z]+)/$', 'coach_common'),
-     url(r'^coaches/departures/(?P<season>\d\d\d\d)/$', 'departures'),
-     url(r'^coaches/hires/(?P<season>\d\d\d\d)/$', 'coaching_hires'),
+    url(r'^coaches/$', 'coach_index'),
+    url(r'^coaches/active/$', 'active_coaches'),
+    url(r'^coaches/feeds/recent_hires/$', 'recent_hires_feed'),
+    url(r'^coaches/detail/(?P<coach>\d+-[-a-z]+)/$', 'coach_detail', name="coach_detail"),
+    url(r'^coaches/detail/(?P<coach>\d+-[-a-z]+)/vs/$', 'coach_vs', name="coach_vs"),
+    url(r'^coaches/detail/(?P<coach>\d+-[-a-z]+)/vs/(?P<coach2>\d+-[-a-z]+)/$', 'coach_compare', name="coach_compare"),
+    url(r'^coaches/assistants/$', 'assistant_index'),
+    url(r'^coaches/common/(?P<coach>\d+-[-a-z]+)/(?P<coach2>\d+-[-a-z]+)/$', 'coach_common'),
+    url(r'^coaches/departures/(?P<season>\d\d\d\d)/$', 'departures'),
+    url(r'^coaches/hires/(?P<season>\d\d\d\d)/$', 'coaching_hires'),
 )
 
 # Server Static Content When Debugging & provide views for 500 & 404 errors
