@@ -1,21 +1,21 @@
 from django.shortcuts import render_to_response, get_object_or_404
 from django.db.models import Avg, Sum, Min, Max, Count
 from django.http import Http404, HttpResponse, HttpResponseRedirect
-from django.core.context_processors import csrf
 from django.views.decorators.csrf import csrf_protect
 from django.template import RequestContext
 from django.conf import settings
-from django.core.urlresolvers import reverse
-from django.contrib.syndication.views import Feed
+from django.contrib.syndication.views import Feed, FeedDoesNotExist
 from django import forms
 from django.utils import simplejson
 from django.forms.models import modelformset_factory
 from django.views.decorators.cache import cache_control
+
 from operator import itemgetter
 from time import strptime
 import datetime
 import mimeparse
 import logging
+
 from college.models import *
 from rankings.models import *
 from utils import calculate_record, last_home_loss_road_win, opposing_coaches, update_college_year, calculate_team_year
@@ -95,7 +95,8 @@ def conference_index(request):
 
 def conference_detail(request, conf, season=None):
     if not season:
-        season = datetime.date.today().year
+        #season = datetime.date.today().year
+        season = settings.CURRENT_SEASON
     c = get_object_or_404(Conference, abbrev=conf)
     team_list = CollegeYear.objects.filter(conference=c, season=season).select_related().order_by('college_college.name')
     return render_to_response('college/conference_detail.html', {'conference': c, 'team_list': team_list, 'season':season })
@@ -371,7 +372,8 @@ def game_drive(request, team1, team2, year, month, day):
 
     date = datetime.date(int(year), int(month), int(day))
     game = get_object_or_404(Game, team1=team_1, team2=team_2, date=date)
-    drives = game.gamedrive_set.all()
+    #drives = game.gamedrive_set.all()
+    drives = GameDrive.objects.filter(game=game,team=team_1)
     return render_to_response('college/game_drives.html', {'team_1': team_1, 'team_2': team_2, 'game': game, 'drives': drives })
 
 def game_plays(request, team1, team2, year, month, day):
@@ -386,7 +388,9 @@ def game_plays(request, team1, team2, year, month, day):
 
     date = datetime.date(int(year), int(month), int(day))
     game = get_object_or_404(Game, team1=team_1, team2=team_2, date=date)
-    plays = game.gameplay_set.all().order_by('drive', 'id')
+    #plays = game.gameplay_set.all().order_by('drive', 'id')
+    plays = GamePlay.objects.filter(game=game, offensive_team=team_1).order_by('drive', 'id')
+
     return render_to_response('college/game_plays.html', {'team_1': team_1, 'team_2': team_2, 'game': game, 'plays': plays })
 
 def game_index(request):

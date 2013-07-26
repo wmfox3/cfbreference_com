@@ -2,7 +2,7 @@ from django.contrib import admin
 from college.models import State, City, College, Coach, CoachingJob, CollegeYear, CollegeCoach, Game, Position, Player, PlayerGame, PlayerRush, PlayerPass,PlayerReceiving, PlayerFumble, PlayerScoring, PlayerTackle, PlayerTacklesLoss, PlayerPassDefense, PlayerReturn, Conference, GameOffense, GameDefense, Week, GameDrive, DriveOutcome, BowlGame, QuarterScore, GameScore, GameDriveSeason, GamePlay
 
 class CollegeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'updated', 'slug', 'drive_slug', 'id', 'official_url', 'official_rss')
+    list_display = ('name', 'updated', 'slug', 'drive_slug', 'state', 'id', 'official_url', 'official_rss')
     list_filter = ('updated',)
     ordering = ('name',)
     search_fields = ('name',)
@@ -45,7 +45,7 @@ class CityAdmin(admin.ModelAdmin):
 class GameAdmin(admin.ModelAdmin):
     list_display = ('team1', 'team2', 'date', 't1_result', 'team1_score', 'team2_score', 'ncaa_xml', 'has_drives', 'has_plays', 'has_stats', 'has_player_stats')
     ordering = ('-date',)
-    list_filter = ('season','week')
+    list_filter = ('season','week', 'team1__college__updated')
     search_fields = ('team1__college__name',)
     raw_id_fields = ("coach1", "coach2", "team1", "team2", "bowl_game")
     list_select_related = True
@@ -109,6 +109,9 @@ class GameScoreAdmin(admin.ModelAdmin):
 class GamePlayAdmin(admin.ModelAdmin):
     list_display = ('game', 'offensive_team', 'drive', 'description')
 
+class PositionAdmin(admin.ModelAdmin):
+    list_display = ('abbrev', 'name', 'position_type')
+
 admin.site.register(College, CollegeAdmin)
 admin.site.register(CollegeYear, CollegeYearAdmin)
 admin.site.register(Coach, CoachAdmin)
@@ -124,7 +127,7 @@ admin.site.register(PlayerTackle)
 admin.site.register(PlayerTacklesLoss)
 admin.site.register(PlayerPassDefense)
 admin.site.register(PlayerFumble, PlayerFumbleAdmin)
-admin.site.register(Position)
+admin.site.register(Position, PositionAdmin)
 admin.site.register(City, CityAdmin)
 admin.site.register(Game, GameAdmin)
 admin.site.register(Week, WeekAdmin)

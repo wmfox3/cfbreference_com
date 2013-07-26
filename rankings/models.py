@@ -13,6 +13,9 @@ else:
     CURRENT_SEASON = datetime.date.today().year
 
 class RankingType(models.Model):
+    '''
+    The RankingType model stashes the various types of rankings being tracked. 
+    '''
     name = models.CharField(max_length=75)
     slug = models.SlugField(max_length=75)
     typename = models.CharField(max_length=1, choices=RANKINGTYPE_CHOICES)
@@ -22,15 +25,19 @@ class RankingType(models.Model):
         return self.name
     
     def get_current_url(self):
-        return "/rankings/%s/%s/" % (self.slug, CURRENT_SEASON)
+        return "/ncaa/rankings/%s/%s/" % (self.slug, CURRENT_SEASON)
     
     def get_partial_url(self):
-        return "/rankings/%s/" % self.slug
+        return "/ncaa/rankings/%s/" % self.slug
         
     def year_list(self):
         return list(set([y.year for y in self.ranking_set.all()]))    
 
 class Ranking(models.Model):
+    '''
+    The Rankings model collects team level rankings by ranking_type. Team (CollegeYear) rankings are kept by week and tracked by conference and division.
+    Denormalized season integers are in here, evidently to allow easier queries.
+    '''
     ranking_type = models.ForeignKey(RankingType)
     collegeyear = models.ForeignKey(CollegeYear)
     season = models.IntegerField()
@@ -46,7 +53,7 @@ class Ranking(models.Model):
         return "%s - %s (%s)" % (self.ranking_type, self.collegeyear, self.week)
     
     def get_week_url(self):
-        return "/rankings/%s/%s/week/%s/" % (self.ranking_type.slug, self.year, self.week.week_num)
+        return "/ncaa/rankings/%s/%s/week/%s/" % (self.ranking_type.slug, self.year, self.week.week_num)
 
 class RushingSummary(models.Model):
     player = models.ForeignKey(Player)
@@ -61,7 +68,8 @@ class RushingSummary(models.Model):
     yards_per_game = models.FloatField()
     
     def __unicode__(self):
-        return "%s - %s, %s" (self.player, self.year, self.yards_per_game)
+        #return "%s - %s, %s" (self.player, self.season, self.yards_per_game)
+        return self.player.name
 
 class PassEfficiency(models.Model):
     player = models.ForeignKey(Player)

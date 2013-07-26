@@ -63,6 +63,9 @@ class State(models.Model):
 
     def get_absolute_url(self):
         return "/ncaa/states/%s/" % self.id.lower()
+
+    class Meta:
+        ordering = ['name']
     
 class StateForm(forms.Form):
     name = forms.ModelChoiceField(queryset=State.objects.all().order_by('name'))

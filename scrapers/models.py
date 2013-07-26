@@ -1,5 +1,6 @@
 from lxml import etree
 from datetime import datetime
+from django.conf import settings
 
 class Utils(object):
     @staticmethod
@@ -22,206 +23,206 @@ class NCAAGameTeamStats(object):
 
     @property
     def time_of_possession(self):
-        return self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOP")).text
+        return self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOP")).text
 
     @property
     def third_down_attempts(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/THIRDDOWNS/ATT")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/THIRDDOWNS/ATT")).text))
 
     @property
     def third_down_conversions(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/THIRDDOWNS/CONV")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/THIRDDOWNS/CONV")).text))
 
     @property
     def fourth_down_attempts(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/FOURTHDOWNS/ATT")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/FOURTHDOWNS/ATT")).text))
 
     @property
     def fourth_down_conversions(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/FOURTHDOWNS/CONV")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/FOURTHDOWNS/CONV")).text))
 
     @property
     def first_downs_rushing(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/FIRSTDOWNS/RUSH")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/FIRSTDOWNS/RUSH")).text))
 
     @property
     def first_downs_passing(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/FIRSTDOWNS/PASS")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/FIRSTDOWNS/PASS")).text))
     @property
     def first_downs_penalty(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/FIRSTDOWNS/PENALTY")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/FIRSTDOWNS/PENALTY")).text))
     @property
     def first_downs_total(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/FIRSTDOWNS/TOTAL")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/FIRSTDOWNS/TOTAL")).text))
     @property
     def penalties(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/PENALTIES/NUMBER")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/PENALTIES/NUMBER")).text))
     @property
     def penalty_yards(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/PENALTIES/YARDS")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/PENALTIES/YARDS")).text))
     @property
     def fumbles(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/FUMBLES/NUMBER")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/FUMBLES/NUMBER")).text))
     @property
     def fumbles_lost(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/FUMBLES/LOST")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/FUMBLES/LOST")).text))
     @property
     def rushes(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/RUSHING/NUMBER")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/RUSHING/NUMBER")).text))
     @property
     def rush_gain(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/RUSHING/GAIN")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/RUSHING/GAIN")).text))
     @property
     def rush_loss(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/RUSHING/LOSS")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/RUSHING/LOSS")).text))
     @property
     def rush_net(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/RUSHING/NET")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/RUSHING/NET")).text))
     @property
     def rush_touchdowns(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/RUSHING/TD")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/RUSHING/TD")).text))
     @property
     def total_plays(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/RUSHING/TOTPLAYS")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/RUSHING/TOTPLAYS")).text))
     @property
     def total_yards(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/RUSHING/TOTYARDS")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/RUSHING/TOTYARDS")).text))
     @property
     def pass_attempts(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/PASSING/ATT")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/PASSING/ATT")).text))
     @property
     def pass_completions(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/PASSING/COMP")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/PASSING/COMP")).text))
     @property
     def pass_interceptions(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/PASSING/INT")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/PASSING/INT")).text))
     @property
     def pass_yards(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/PASSING/YARDS")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/PASSING/YARDS")).text))
     @property
     def pass_touchdowns(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/PASSING/TD")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/PASSING/TD")).text))
     @property
     def receptions(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/RECEIVING/NUMBER")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/RECEIVING/NUMBER")).text))
     @property
     def receiving_yards(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/RECEIVING/YARDS")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/RECEIVING/YARDS")).text))
     @property
     def receiving_touchdowns(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/RECEIVING/TD")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/RECEIVING/TD")).text))
     @property
     def punts(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/PUNT/NUMBER")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/PUNT/NUMBER")).text))
     @property
     def punt_yards(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/PUNT/YARDS")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/PUNT/YARDS")).text))
     @property
     def punt_returns(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/RETURNS/PUNTNUMBER")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/RETURNS/PUNTNUMBER")).text))
     @property
     def punt_return_yards(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/RETURNS/PUNTYARDS")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/RETURNS/PUNTYARDS")).text))
     @property
     def punt_return_touchdowns(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/RETURNS/PUNTTD")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/RETURNS/PUNTTD")).text))
     @property
     def kickoff_returns(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/RETURNS/KONUMBER")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/RETURNS/KONUMBER")).text))
     @property
     def kickoff_return_yards(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/RETURNS/KOYARDS")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/RETURNS/KOYARDS")).text))
     @property
     def kickoff_return_touchdowns(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/RETURNS/KOTD")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/RETURNS/KOTD")).text))
     @property
     def touchdowns(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/SCORING/TD")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/SCORING/TD")).text))
     @property
     def pat_attempts(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/SCORING/OFFKICKATT")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/SCORING/OFFKICKATT")).text))
     @property
     def pat_made(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/SCORING/OFFKICKMADE")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/SCORING/OFFKICKMADE")).text))
     @property
     def two_point_conversion_attempts(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/SCORING/OFFRPATT")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/SCORING/OFFRPATT")).text))
     @property
     def two_point_conversions(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/SCORING/OFFRPMADE")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/SCORING/OFFRPMADE")).text))
     @property
     def field_goal_attempts(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/SCORING/FGATT")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/SCORING/FGATT")).text))
     @property
     def field_goals_made(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/SCORING/FGMADE")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/SCORING/FGMADE")).text))
     @property
     def points(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/SCORING/PTS")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/SCORING/PTS")).text))
 
     @property
     def safeties(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/SCORING/SAF")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/SCORING/SAF")).text))
     @property
     def unassisted_tackles(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/TACKLES/UATACKLES")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/TACKLES/UATACKLES")).text))
 
     @property
     def assisted_tackles(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/TACKLES/ATACKLES")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/TACKLES/ATACKLES")).text))
 
     @property
     def unassisted_tackles_for_loss(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/TFL/UATFL")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/TFL/UATFL")).text))
 
     @property
     def assisted_tackles_for_loss(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/TFL/ATFL")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/TFL/ATFL")).text))
 
     @property
     def tackles_for_loss_yards(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/TFL/TFLYARDS")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/TFL/TFLYARDS")).text))
 
     @property
     def unassisted_sacks(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/TFL/UASACKS")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/TFL/UASACKS")).text))
 
     @property
     def assisted_sacks(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/TFL/ASACKS")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/TFL/ASACKS")).text))
 
     @property
     def sack_yards(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/TFL/SACKYARDS")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/TFL/SACKYARDS")).text))
 
     @property
     def defensive_interceptions(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/PASSDEFENSE/INTNUMBER")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/PASSDEFENSE/INTNUMBER")).text))
 
     @property
     def defensive_interception_yards(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/PASSDEFENSE/INTYARDS")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/PASSDEFENSE/INTYARDS")).text))
 
     @property
     def defensive_interception_touchdowns(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/PASSDEFENSE/INTTD")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/PASSDEFENSE/INTTD")).text))
     @property
     def pass_breakups(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/PASSDEFENSE/PASSBREAKUPS")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/PASSDEFENSE/PASSBREAKUPS")).text))
     @property
     def fumbles_forced(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/FUMBLES/FUMBLESFORCED")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/FUMBLES/FUMBLESFORCED")).text))
     @property
     def fumbles_number(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/FUMBLES/FUMBLESNUMBER")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/FUMBLES/FUMBLESNUMBER")).text))
 
     @property
     def fumbles_yards(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/FUMBLES/FUMBLESYARDS")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/FUMBLES/FUMBLESYARDS")).text))
 
     @property
     def fumbles_touchdowns(self):
-        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("/TEAMS/%s/TOTALS/FUMBLES/FUMBLESTD")).text))
+        return int(Utils.clean_get(self.game_xml.find(self.get_xpath_statement("./TEAMS/%s/TOTALS/FUMBLES/FUMBLESTD")).text))
 
     def __init__(self, game_xml, team_side_string):
        self.game_xml = game_xml
@@ -252,7 +253,20 @@ class NCAAGame(object):
         self.create_stats()
 
     def __init__(self, game_xml_file):
-        self.game_xml = etree.parse(game_xml_file)
+
+        from django.core.cache import cache
+        import urllib
+        
+        myObject = cache.get(game_xml_file)
+        if (myObject == None):
+            myObject = urllib.urlopen(game_xml_file).read()
+            cache.set(game_xml_file, myObject, settings.XML_CACHE_TIME*60) # Will cache the object for 60*60 seconds.
+            print "retrieving remote game xml file and caching"
+        else:
+            print "pulling game xml file from cache"
+            
+        self.game_xml = etree.XML(myObject)
+        #self.game_xml = etree.parse(game_xml_file)
         self.create_stats()
 
     def create_stats(self):
