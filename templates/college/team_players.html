@@ -18,7 +18,8 @@
             {% for player in player_list %}
                 <tr>
                     <td>{{ player.number }}</td>
-                    <td><a href="{{ player.get_absolute_url }}">{{ player.name }}</a></td>
+
+                    <td><a href="{% url college_player_number_position team.college.slug year player.slug player.number player.position %}">{{ player.name }}</a></td>
                     <td><a href="{{ player.get_team_position_url }}">{{ player.position.abbrev }}</a></td>
                     <td><a href="{{ player.get_team_class_url }}">{{ player.status }}</a></td>
                     <td>{{ player.games_played }}</td>

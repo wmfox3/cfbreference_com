@@ -4,7 +4,7 @@
 
 {% block content %}
 
-    <h3><a href="{{ team.get_absolute_url }}">{{ team.name }}</a></h3>
+    <h3><a href="{% url team_detail team.slug %}">{{ team.name }}</a><!--<a href="{{ team.get_absolute_url }}">{{ team.name }}</a>--></h3>
     {% if season_record.conference %}
         <h2><a href="{{ season_record.get_conference_url }}">{{ season_record.conference.name }}</a></h2>
     {% endif %}
