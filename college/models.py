@@ -62,7 +62,7 @@ class State(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return "/ncaa/states/%s/" % self.id.lower()
+        return "/states/%s/" % self.id.lower()
 
     class Meta:
         ordering = ['name']
@@ -82,7 +82,7 @@ class City(models.Model):
             return self.name
     
     def get_absolute_url(self):
-        return "/ncaa/states/%s/%s/" % (self.state.id.lower(), self.slug)
+        return "/states/%s/%s/" % (self.state.id.lower(), self.slug)
     
     class Meta:
         verbose_name_plural = 'cities'
@@ -97,7 +97,7 @@ class Week(models.Model):
         return "Week %s, %s" % (self.week_num, self.season)
     
     def week_games_url(self):
-        return "/ncaa/seasons/%s/week/%s/" % (self.season, self.week_num)
+        return "/seasons/%s/week/%s/" % (self.season, self.week_num)
 
 class Conference(models.Model):
     abbrev = models.CharField(max_length=10)
@@ -107,7 +107,7 @@ class Conference(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return '/ncaa/conferences/%s/' % self.abbrev.lower()
+        return '/conferences/%s/' % self.abbrev.lower()
 
 class NextDummyId(models.Model):
     next_id = models.PositiveIntegerField()
@@ -126,7 +126,7 @@ class College(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return '/ncaa/teams/%s/' % self.slug
+        return '/teams/%s/' % self.slug
     
     def current_record(self):
         current_season = self.collegeyear_set.get(season=datetime.date.today()).year
@@ -165,11 +165,11 @@ class CollegeYear(models.Model):
         return 'http://web1.ncaa.org/football/exec/rankingSummary?year=%d&org=%d&week=' % (self.season, self.college.id)
     
     def get_absolute_url(self):
-        return "/ncaa/teams/%s/%s/" % (self.college.slug, self.season)
+        return "/teams/%s/%s/" % (self.college.slug, self.season)
     
     def get_conference_url(self):
         if self.conference:
-            return "/ncaa/conferences/%s/%s/" % (self.conference.abbrev, self.season)
+            return "/conferences/%s/%s/" % (self.conference.abbrev, self.season)
     
     def coaching_staff_url(self):
         return self.get_absolute_url()+'coaches/'
@@ -214,7 +214,7 @@ class Coach(models.Model):
         super(Coach, self).save()
     
     def get_absolute_url(self):
-        return '/ncaa/coaches/detail/%s/' % self.slug
+        return '/coaches/detail/%s/' % self.slug
     
     def full_name(self):
         return self.first_name + " " + self.last_name
@@ -397,7 +397,7 @@ class Position(models.Model):
         return self.abbrev
 
     def get_absolute_url(self):
-        return '/ncaa/recruits/positions/%s/' % self.abbrev.lower()
+        return '/recruits/positions/%s/' % self.abbrev.lower()
 
 
 class BowlGame(models.Model):
@@ -409,7 +409,7 @@ class BowlGame(models.Model):
         return self.name
     
     def get_absolute_url(self):
-        return '/ncaa/bowl-games/%s/' % self.slug
+        return '/bowl-games/%s/' % self.slug
     
 
 class Game(models.Model):
@@ -447,13 +447,13 @@ class Game(models.Model):
         return self.team2.college.name
     
     def get_absolute_url(self):
-        return '/ncaa/teams/%s/vs/%s/%s/%s/%s/' % (self.team1.college.slug, self.team2.college.slug, self.date.year, self.date.month, self.date.day)
+        return '/teams/%s/vs/%s/%s/%s/%s/' % (self.team1.college.slug, self.team2.college.slug, self.date.year, self.date.month, self.date.day)
 
     def get_matchup_url(self):
-        return '/ncaa/teams/%s/vs/%s/' % (self.team1.college.slug, self.team2.college.slug)
+        return '/teams/%s/vs/%s/' % (self.team1.college.slug, self.team2.college.slug)
     
     def get_reverse_url(self):
-        return '/ncaa/teams/%s/vs/%s/%s/%s/%s/' % (self.team2.college.slug, self.team1.college.slug, self.date.year, self.date.month, self.date.day)
+        return '/teams/%s/vs/%s/%s/%s/%s/' % (self.team2.college.slug, self.team1.college.slug, self.date.year, self.date.month, self.date.day)
         
     def get_ncaa_xml_url(self):
         return 'http://web1.ncaa.org/d1mfb/%s/Internet/worksheets/%s.xml' % (self.season, self.ncaa_xml.strip())
@@ -688,10 +688,10 @@ class Player(models.Model):
         #return /ncaa'/teams/%s/%s/players/%s/' % (self.team.college.slug, self.season, self.slug)
     
     def get_team_position_url(self):
-        return '/ncaa/teams/%s/%s/players/positions/%s/' % (self.team.college.slug, self.season, self.position.abbrev.lower())
+        return '/teams/%s/%s/players/positions/%s/' % (self.team.college.slug, self.season, self.position.abbrev.lower())
     
     def get_team_class_url(self):
-        return '/ncaa/teams/%s/%s/players/class/%s/' % (self.team.college.slug, self.season, self.status.lower())
+        return '/teams/%s/%s/players/class/%s/' % (self.team.college.slug, self.season, self.status.lower())
     
     class Meta:
         ordering = ['id']
